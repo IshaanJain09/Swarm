@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mujoco model="car">
+  <compiler angle="degree" inertiafromgeom="true" autolimits="true" balanceinertia="true"/>
+  
+  <option timestep="0.1" gravity="0 0 -9.81" viscosity="0" integrator="RK4" impratio="0.1" tolerance="0.0001" iterations="100" jacobian="dense"/>
+  
+  <size njmax="500" nconmax="100"/>
+  
+  <asset>
+    <mesh name="body" file="SAR_Bod.stl" scale="1 1 1"/>
+  </asset>
+  
+  <default>
+    <joint damping="1.0" armature="0.005"/>
+    <geom friction="0.7 0.3 0.01" solimp="0.8 0.99 0.01" solref="0.02 1"/>
+  </default>
+  
+  <worldbody>
+    <body name="car" pos="0 0 0" euler="0 0 0">
+      <freejoint/>
+      <geom type="mesh" mesh="body" pos="0 0 0.12" rgba="1 1 1 1" mass="6"/>
+      
+      <body name="caster_mount" pos="0 -0.075 0.109">
+        <geom type="sphere" size="0.001" mass="0.01" rgba="0 0 0 0"/>
+        <body name="caster_wheel">
+          <joint name="caster_roll" type="ball" damping="0.5" limited="false"/>
+          <geom type="sphere" size="0.01" mass="3" friction="0.1 0.001 0.001"/>
+        </body>
+      </body>
+      
+      <!-- LiDAR sites - every 30 degrees for reduced complexity -->
+      <site name="L0" type="cylinder" pos="0 -0.1 0.17" euler="90 0 0" size="0.005"/>
+      <site name="L30" type="cylinder" pos="0 -0.1 0.17" euler="90 30 0" size="0.005"/>
+      <site name="L60" type="cylinder" pos="0 -0.1 0.17" euler="90 60 0" size="0.005"/>
+      <site name="L90" type="cylinder" pos="0 -0.1 0.17" euler="90 90 0" size="0.005"/>
+      <site name="L120" type="cylinder" pos="0 -0.1 0.17" euler="90 120 0" size="0.005"/>
+      <site name="L150" type="cylinder" pos="0 -0.1 0.17" euler="90 150 0" size="0.005"/>
+      <site name="L180" type="cylinder" pos="0 -0.1 0.17" euler="90 180 0" size="0.005"/>
+      <site name="L210" type="cylinder" pos="0 -0.1 0.17" euler="90 210 0" size="0.005"/>
+      <site name="L240" type="cylinder" pos="0 -0.1 0.17" euler="90 240 0" size="0.005"/>
+      <site name="L270" type="cylinder" pos="0 -0.1 0.17" euler="90 270 0" size="0.005"/>
+      <site name="L300" type="cylinder" pos="0 -0.1 0.17" euler="90 300 0" size="0.005"/>
+      <site name="L330" type="cylinder" pos="0 -0.1 0.17" euler="90 330 0" size="0.005"/>
+      
+      <body name="right_wheel" pos="-.064585 .023 .124" euler="0 90 0">
+        <joint name="right_wheel_joint" type="hinge" axis="0 0 1" limited="false"/>
+        <geom type="cylinder" size="0.0275 0.0122" mass="4" friction="0.5 0.01 0.01" solimp="0.9 0.9 0.01"/>
+      </body>
+      
+      <body name="left_wheel" pos=".064585 .023 .124" euler="0 90 0">
+        <joint name="left_wheel_joint" type="hinge" axis="0 0 1" limited="false"/>
+        <geom type="cylinder" size="0.0275 0.0122" mass="4" friction="0.5 0.01 0.01" solimp="0.9 0.9 0.01"/>
+      </body>
+    </body>
+  </worldbody>
+  
+  <actuator>
+    <motor name="left_motor" joint="left_wheel_joint"/>
+    <motor name="right_motor" joint="right_wheel_joint"/>
+  </actuator>
+  
+  <sensor>
+    <rangefinder name="L0" site="L0"/>
+    <rangefinder name="L30" site="L30"/>
+    <rangefinder name="L60" site="L60"/>
+    <rangefinder name="L90" site="L90"/>
+    <rangefinder name="L120" site="L120"/>
+    <rangefinder name="L150" site="L150"/>
+    <rangefinder name="L180" site="L180"/>
+    <rangefinder name="L210" site="L210"/>
+    <rangefinder name="L240" site="L240"/>
+    <rangefinder name="L270" site="L270"/>
+    <rangefinder name="L300" site="L300"/>
+    <rangefinder name="L330" site="L330"/>
+    <framequat name="car_orientation" objtype="body" objname="car"/>
+  </sensor>
+</mujoco>
