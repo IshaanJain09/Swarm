@@ -18,11 +18,9 @@
     <frame pos="0 0 -.095">
       <attach model="car" prefix="1"/>
     </frame>
-    
     <frame pos="1 0 -.095">
       <attach model="car" prefix="2"/>
     </frame>
-    
     <frame pos="-1 0 -.095">
       <attach model="car" prefix="3"/>
     </frame>
