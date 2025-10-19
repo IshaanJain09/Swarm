@@ -28,7 +28,6 @@
         </body>
       </body>
       
-      <!-- LiDAR sites - every 30 degrees for reduced complexity -->
       <site name="L0" type="cylinder" pos="0 -0.1 0.17" euler="90 0 0" size="0.005"/>
       <site name="L30" type="cylinder" pos="0 -0.1 0.17" euler="90 30 0" size="0.005"/>
       <site name="L60" type="cylinder" pos="0 -0.1 0.17" euler="90 60 0" size="0.005"/>
