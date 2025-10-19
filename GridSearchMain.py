@@ -221,8 +221,7 @@ class EnhancedLidarVisualizer:
         return vis_thread
 
 if __name__ == "__main__":
-    xml_file_path = "sim.xml"
-    m = mujoco.MjModel.from_xml_path(xml_file_path)
+    m = mujoco.MjModel.from_xml_path("sim.xml")
     d = mujoco.MjData(m)
 
     car_prefixes = ["1", "2", "3"]
