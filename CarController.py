@@ -50,11 +50,11 @@ class Controller:
         self.lidar_angles = list(range(0, 360, 10))
         self.lidar_sensor_names = [f"{self.robot_prefix}L{angle}" for angle in self.lidar_angles]
 
-        self.linear_gains = PIDGains(kp=10.0, ki=0.0, kd=1.5)
+        self.linear_gains = PIDGains(kp=2.0, ki=0.0, kd=0.5)
         self.linear_state = PIDState()
         self.integral_linear_max = 0.2
 
-        self.angular_gains = PIDGains(kp=5.0, ki=0.0, kd=0.0)
+        self.angular_gains = PIDGains(kp=2.0, ki=0.0, kd=0.5)
         self.angular_state = PIDState()
         self.integral_angular_max = 0.1
 
@@ -466,25 +466,29 @@ class Controller:
         return float(steering_command), np.min(distances)
     
 if __name__ == "__main__":
-    print("This code runs when the script is executed directly.")
+    print("Testing CarController PID Update")
+  
+    class TestController:
+        def __init__(self, kp, ki, kd):
+            self.kp = kp
+            self.ki = ki
+            self.kd = kd
+            self.integral = 0
+            self.prev_error = 0
+            
+        def update(self, error, dt):
+            P = self.kp * error
+            self.integral += error * dt
+            I = self.ki * self.integral
+            D = self.kd * (error - self.prev_error) / dt
+            self.prev_error = error
+            
+            output = P + I + D
+            return output
 
-
-
-
-"""When one of the cars reaches a desitnation, but the others havent
-make sure that car transitions to the next waypoint. Make sure to
-do the same for the other cars as they reach their waypoints
-
-Look at Mujoco documentation for getting the LiDar points
-    How to modela  360 degree LiDar(not using multiple sites, but soemthign that doesnt make so much code. Maybe create a new rangefinder every 10 degrees?)
-    MuJoCo RGDB(repositior for visiualizing how LiDar and point souirces of light would work in MuJoCo), then get a list of distances printed out in the terminal(also limit any useless stuff gettign printed) 
-
-Way to visualize points in MuJoCo(addon)
-    https://zhuanlan.zhihu.com/p/6863743613
-    Using this and mathplotlib, figure out the distances between 2 points to find out how far Car1 may be from Car2
-    Create box, start with 1 robot, then move to 2 robots, etc. Try overlaying the points in MuJoco(points meaning the points from matplot lib in the link(https://zhuanlan.zhihu.com/p/6863743613))
-    Get familiar with mathplotlib: Visualize the plot/graph(blitting, redraw certain points) -> done in matplotlib
-
-Use numpy whenever possible
-
-AFTER THIS, WE MAKE SWARM ALGORiTHIM"""
+    controller = TestController(kp=1, ki=0, kd=0.05)
+    
+    for e in [5, 3, 1, 0.5, 0.1]:
+        print(f"Error={e:.1f}, Output={controller.update(e, 0.1):.4f}")
+        
+    print("Test Complete")
