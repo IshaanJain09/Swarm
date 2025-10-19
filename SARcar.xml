@@ -41,6 +41,10 @@
       <site name="L300" type="cylinder" pos="0 -0.1 0.17" euler="90 300 0" size="0.005"/>
       <site name="L330" type="cylinder" pos="0 -0.1 0.17" euler="90 330 0" size="0.005"/>
       
+      <site name="thermal_center" type="sphere" pos="0 0.15 0.17" size="0.01" rgba="1 0.5 0 0.5"/>
+      <site name="thermal_left" type="sphere" pos="-0.08 0.13 0.17" size="0.01" rgba="1 0.5 0 0.5"/>
+      <site name="thermal_right" type="sphere" pos="0.08 0.13 0.17" size="0.01" rgba="1 0.5 0 0.5"/>
+      
       <body name="right_wheel" pos="-.064585 .023 .124" euler="0 90 0">
         <joint name="right_wheel_joint" type="hinge" axis="0 0 1" limited="false"/>
         <geom type="cylinder" size="0.0275 0.0122" mass="4" friction="0.5 0.01 0.01" solimp="0.9 0.9 0.01"/>
@@ -71,6 +75,11 @@
     <rangefinder name="L270" site="L270"/>
     <rangefinder name="L300" site="L300"/>
     <rangefinder name="L330" site="L330"/>
+    
+    <rangefinder name="thermal_center" site="thermal_center"/>
+    <rangefinder name="thermal_left" site="thermal_left"/>
+    <rangefinder name="thermal_right" site="thermal_right"/>
+    
     <framequat name="car_orientation" objtype="body" objname="car"/>
   </sensor>
 </mujoco>
