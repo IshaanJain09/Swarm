@@ -2,11 +2,6 @@ import numpy as np
 from typing import Dict, Tuple, Optional
 
 class ObstacleAvoidance:
-    """
-    A class for robot obstacle avoidance using 12-sector LIDAR sensor data.
-    Provides forward and turning commands based on repulsion forces from obstacles.
-    """
-
     def __init__(
         self,
         danger_threshold: float = 1.5,
@@ -19,7 +14,6 @@ class ObstacleAvoidance:
         self.safe_threshold = safe_threshold
         self.base_speed = base_speed
 
-        # LIDAR sensor angles (degrees)
         self.sensor_angles = {
             'L0': 0, 'L30': 30, 'L60': 60, 'L90': 90,
             'L120': 120, 'L150': 150, 'L180': 180,
@@ -27,7 +21,6 @@ class ObstacleAvoidance:
             'L300': 300, 'L330': 330
         }
 
-        # Weight of each sector for repulsion
         self.sector_weights = {
             'L0': 3.0, 'L30': 2.5, 'L60': 2.0, 'L90': 1.5,
             'L120': 1.0, 'L150': 0.8, 'L180': 0.5,
@@ -35,21 +28,12 @@ class ObstacleAvoidance:
             'L300': 2.0, 'L330': 2.5
         }
 
-    # --------------------------------------------------------
-    # Compute repulsion forces from obstacles
-    # --------------------------------------------------------
     def compute_obstacle_forces(
         self,
         sensor_map: Dict[str, int],
         d,
         robot_prefix: str
     ) -> Tuple[float, float]:
-        """
-        Compute forward scale and turn command based on sensor distances.
-        Returns (forward_scale, turn_command) where:
-          - forward_scale is 0..1 scaling for speed
-          - turn_command is -1..1, negative=left, positive=right
-        """
         if not sensor_map:
             return 1.0, 0.0
 
@@ -70,7 +54,6 @@ class ObstacleAvoidance:
             angle_rad = np.deg2rad(angle_deg)
             weight = self.sector_weights[angle_id]
 
-            # Repulsion based on distance thresholds
             if distance < self.danger_threshold:
                 repulsion = weight * (1.0 - distance / self.danger_threshold) ** 2
             elif distance < self.caution_threshold:
@@ -80,23 +63,17 @@ class ObstacleAvoidance:
             else:
                 repulsion = 0.0
 
-            # Forward axis is along +Y
             repulsion_x = -repulsion * np.sin(angle_rad)
             repulsion_y = -repulsion * np.cos(angle_rad)
 
             total_repulsion_x += repulsion_x
             total_repulsion_y += repulsion_y
 
-        # Forward scaling: always positive, decreases near obstacles
         forward_scale = np.clip(np.exp(total_repulsion_y) , 0.3, 1.0)
-        # Turn command: -1=left, +1=right
         turn_command = np.clip(total_repulsion_x * 0.5, -1.0, 1.0)
 
         return forward_scale, turn_command
 
-    # --------------------------------------------------------
-    # Determine best emergency direction if blocked
-    # --------------------------------------------------------
     def compute_best_direction(
         self,
         sensor_map: Dict[str, int],
@@ -104,10 +81,6 @@ class ObstacleAvoidance:
         robot_prefix: str,
         preferred_angle: Optional[float] = None
     ) -> Tuple[bool, float]:
-        """
-        Determines if the robot is blocked and computes an emergency turn.
-        Returns (is_blocked, turn_direction) where turn_direction = -1(left)/+1(right)
-        """
         if not sensor_map:
             return False, 0.0
 
@@ -121,7 +94,6 @@ class ObstacleAvoidance:
         if not is_blocked:
             return False, 0.0
 
-        # Compare left vs right clearance
         left_sectors = ['L30', 'L60', 'L90']
         right_sectors = ['L270', 'L300', 'L330']
 
@@ -134,7 +106,6 @@ class ObstacleAvoidance:
             for s in right_sectors if f"{robot_prefix}{s}" in sensor_map
         )
 
-        # Adjust for preferred direction
         if preferred_angle is not None:
             if preferred_angle > 0:
                 left_clearance *= 1.3
@@ -142,15 +113,11 @@ class ObstacleAvoidance:
                 right_clearance *= 1.3
 
         if left_clearance >= right_clearance:
-            turn_direction = 1.0  # turn right
+            turn_direction = 1.0
         else:
-            turn_direction = -1.0  # turn left
+            turn_direction = -1.0
 
         return True, turn_direction
-
-    # --------------------------------------------------------
-    # Main interface: get left/right wheel speeds
-    # --------------------------------------------------------
     def get_avoidance_commands(
     self,
     sensor_map: Dict[str, int],
@@ -159,42 +126,31 @@ class ObstacleAvoidance:
     current_speed: float,
     target_direction: Optional[float] = None
         ) -> Tuple[float, float]:
-            # Compute repulsion vector
             forward_scale, turn_command = self.compute_obstacle_forces(sensor_map, d, robot_prefix)
             is_blocked, emergency_turn = self.compute_best_direction(sensor_map, d, robot_prefix, target_direction)
 
-            # If blocked, force a minimal forward motion to slide past obstacle
             min_forward_speed = 0.3 * current_speed
             if is_blocked:
-                forward_speed = max(min_forward_speed, current_speed * 0.6)  # slide forward
-                turn_speed = current_speed * 0.7 * emergency_turn           # stronger turn
+                forward_speed = max(min_forward_speed, current_speed * 0.6)
+                turn_speed = current_speed * 0.7 * emergency_turn
             else:
                 forward_speed = current_speed * forward_scale
                 turn_speed = current_speed * 0.5 * turn_command
 
-            # Convert forward + turn into left/right wheel speeds
             left_speed = forward_speed - turn_speed
             right_speed = forward_speed + turn_speed
 
-            # Clip speeds
             left_speed = np.clip(left_speed, -25.0, 25.0)
             right_speed = np.clip(right_speed, -25.0, 25.0)
 
             return left_speed, right_speed
 
-
-    # --------------------------------------------------------
-    # Debug visualization of LIDAR sensor state
-    # --------------------------------------------------------
     def visualize_sensor_state(
         self,
         sensor_map: Dict[str, int],
         d,
         robot_prefix: str
     ) -> str:
-        """
-        Returns a string showing sensor distances and danger levels.
-        """
         output = f"\n=== LIDAR State for Robot {robot_prefix} ===\n"
         for angle_id in ['L0','L30','L60','L90','L120','L150','L180','L210','L240','L270','L300','L330']:
             sensor_name = f"{robot_prefix}{angle_id}"

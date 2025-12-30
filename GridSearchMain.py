@@ -145,44 +145,6 @@ class RealTimeVisualizer:
                 data = self.data_queue.get_nowait()
         except queue.Empty:
             return self._get_all_artists()
-            
-        for i, (robot_id, pos) in enumerate(data['robot_positions'].items()):
-            if i < len(self.robot_plots):
-                self.robot_plots[i].set_data([pos[0]], [pos[1]])
-                
-        for i, (robot_id, wp) in enumerate(data['waypoints'].items()):
-            if i < len(self.waypoint_plots) and wp is not None:
-                robot_pos = data['robot_positions'][robot_id]
-                self.waypoint_plots[i].set_data([wp[0]], [wp[1]])
-                self.waypoint_lines[i].set_data([robot_pos[0], wp[0]], [robot_pos[1], wp[1]])
-            else:
-                if i < len(self.waypoint_plots):
-                    self.waypoint_plots[i].set_data([], [])
-                    self.waypoint_lines[i].set_data([], [])
-                    
-        for i, vic_pos in enumerate(data['victim_positions']):
-            if i < len(self.victim_plots):
-                self.victim_plots[i].set_data([vic_pos[0]], [vic_pos[1]])
-                
-        self.time_steps.append(data['step'])
-        for robot_id, thermal_dist in data['thermal_distances'].items():
-            if robot_id in self.thermal_history:
-                self.thermal_history[robot_id].append(thermal_dist)
-                
-        max_history = 100
-        if len(self.time_steps) > max_history:
-            self.time_steps = self.time_steps[-max_history:]
-            for robot_id in self.thermal_history:
-                self.thermal_history[robot_id] = self.thermal_history[robot_id][-max_history:]
-                
-        for i, (robot_id, history) in enumerate(self.thermal_history.items()):
-            if i < len(self.thermal_lines) and history:
-                self.thermal_lines[i].set_data(self.time_steps[-len(history):], history)
-                
-        if self.time_steps:
-            self.ax_thermal.set_xlim(max(0, self.time_steps[-1] - 100), self.time_steps[-1] + 5)
-            
-        return self._get_all_artists()
         
     def _get_all_artists(self):
         artists = []

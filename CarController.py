@@ -232,6 +232,4 @@ class Controller:
 
 
 if __name__ == "__main__":
-    print("CarController - Simplified version with thermal detection")
-    print("Removed: obstacle avoidance, stuck detection, escape sequences, peer avoidance")
-    print("Kept: Clean PID control + thermal victim detection")
+    print("CarController")
