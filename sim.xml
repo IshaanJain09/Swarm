@@ -1,64 +1,214 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mujoco>
+  <size nuser_geom="1"/>
   <compiler autolimits="true"/>
-  
-  <option temperature="20"/>
-  
+
   <asset>
     <model name="car" file="SARcar.xml"/>
     <texture type="skybox" builtin="gradient" rgb1=".3 .5 .7" rgb2="0 0 0" width="512" height="512"/>
     <texture name="grid" type="2d" builtin="checker" width="512" height="512" rgb1=".1 .2 .3" rgb2=".2 .3 .4"/>
     <material name="grid" texture="grid" texrepeat="1 1" texuniform="true" reflectance=".2"/>
   </asset>
-  
+
   <worldbody>
-    <geom name="floor" size="100 100 .0001" type="plane" material="grid" condim="3"/>
-    
-    <body name="victim1" pos="2.5 2.5 0.4">
-      <geom name="victim1_body" type="box" size="0.3 0.3 0.4" rgba="0.9 0.3 0.3 1" heatcapacity="3470" fluidshape="ellipsoid"/>
-      <site name="victim1_temp" type="sphere" size="0.01" rgba="1 0 0 0.5"/>
+    <geom name="floor" size="100 100 0.0001" type="plane" material="grid" condim="3"/>
+
+    <body name="victim1" pos="2 -5 0.4" user="312">
+      <geom name="victim1_body" type="box" size="0.3 0.3 0.4"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim1_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
     </body>
-    
-    <body name="victim2" pos="-3.0 1.5 0.35">
-      <geom name="victim2_body" type="box" size="0.25 0.4 0.35" rgba="0.9 0.3 0.3 1" heatcapacity="3470" fluidshape="ellipsoid"/>
-      <site name="victim2_temp" type="sphere" size="0.01" rgba="1 0 0 0.5"/>
+
+    <body name="victim2" pos="-2.5 -8 0.4" user="307">
+      <geom name="victim2_body" type="box" size="0.25 0.4 0.35"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim2_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
     </body>
-    
-    <body name="victim3" pos="1.5 -2.8 0.45">
-      <geom name="victim3_body" type="box" size="0.35 0.25 0.45" rgba="0.9 0.3 0.3 1" heatcapacity="3470" fluidshape="ellipsoid"/>
-      <site name="victim3_temp" type="sphere" size="0.01" rgba="1 0 0 0.5"/>
+
+    <body name="victim3" pos="-7.0 -6 0.4" user="307">
+      <geom name="victim3_body" type="box" size="0.35 0.25 0.45"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim3_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
     </body>
-    
-    <body name="victim4" pos="-1.8 -1.2 0.3">
-      <geom name="victim4_body" type="box" size="0.28 0.28 0.3" rgba="0.9 0.3 0.3 1" heatcapacity="3470" fluidshape="ellipsoid"/>
-      <site name="victim4_temp" type="sphere" size="0.01" rgba="1 0 0 0.5"/>
+
+    <body name="victim4" pos="-3.0 -3.0 0.4" user="312">
+      <geom name="victim4_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim4_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
     </body>
-    
-    <body name="victim5" pos="3.5 -1.0 0.38">
-      <geom name="victim5_body" type="box" size="0.32 0.35 0.38" rgba="0.9 0.3 0.3 1" heatcapacity="3470" fluidshape="ellipsoid"/>
-      <site name="victim5_temp" type="sphere" size="0.01" rgba="1 0 0 0.5"/>
+
+    <body name="victim5" pos="3.5 -2.0 0.4" user="309">
+      <geom name="victim5_body" type="box" size="0.32 0.35 0.38"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim5_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
     </body>
-    
-    <geom name="rubble1" type="box" size="0.4 0.4 0.6" pos="-2.5 3.0 0.6" rgba="0.5 0.5 0.5 1"/>
-    <geom name="rubble2" type="box" size="0.35 0.5 0.5" pos="4.0 0.5 0.5" rgba="0.5 0.5 0.5 1"/>
-    <geom name="rubble3" type="box" size="0.5 0.3 0.4" pos="0.0 -3.5 0.4" rgba="0.5 0.5 0.5 1"/>
-    
-    <frame pos="0 0 -.095">
+
+    <body name="victim6" pos="-9.0 -9.0 0.4" user="307">
+      <geom name="victim6_body" type="box" size="0.35 0.25 0.45"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim6_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim7" pos="-8.0 -1.0 0.4" user="312">
+      <geom name="victim7_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim7_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim8" pos="5.0 -11.0 0.4" user="312">
+      <geom name="victim8_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim8_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim9" pos="-2.5 -11.0 0.4" user="312">
+      <geom name="victim9_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim9_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim10" pos="0.0 -11.0 0.4" user="312">
+      <geom name="victim10_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim10_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim11" pos="-5.0 -14.0 0.4" user="312">
+      <geom name="victim11_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim11_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim12" pos="-10.0 -4.0 0.4" user="312">
+      <geom name="victim12_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim12_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim13" pos="1.0 -12.5 0.4" user="312">
+      <geom name="victim13_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim13_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim14" pos="-10.0 -15 0.4" user="312">
+      <geom name="victim14_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim14_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim15" pos="-7.5 -12.5 0.4" user="312">
+      <geom name="victim15_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim15_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim16" pos="-7.5 -15 0.4" user="312">
+      <geom name="victim16_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim16_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim17" pos="5.0 -15 0.4" user="312">
+      <geom name="victim17_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim17_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim18" pos="7.5 -15 0.4" user="312">
+      <geom name="victim18_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim18_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim19" pos="0.0 -15 0.4" user="312">
+      <geom name="victim19_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim19_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+
+    <body name="victim20" pos="2.5 -9 0.4" user="312">
+      <geom name="victim20_body" type="box" size="0.28 0.28 0.3"
+            rgba="0.9 0.3 0.3 1" contype="0" conaffinity="0"/>
+      <site name="victim20_temp" type="sphere" size="0.01"
+            rgba="1 0 0 0.5"/>
+    </body>
+    <!--geom name="ob1"  type="box" pos="-6.2 -1.1 0.05"  size="0.8 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob2"  type="box" pos="-12 -3 0.05" size="1 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob3"  type="box" pos="-7.5 1.2 0.05"  size="0.6 0.6 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob4"  type="box" pos="-10 -4.8 0.05" size="0.7 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob5"  type="box" pos="-7.1 -12 0.05" size="0.8 0.6 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob6"  type="box" pos="-4.2 -14.0 0.05" size="0.6 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob7"  type="box" pos="1.5 -12.7 0.05"  size="0.7 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob8"  type="box" pos="2.2 -7.5 0.05"  size="0.8 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob10" type="box" pos="6.5 -13.8 0.05" size="0.7 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob11" type="box" pos="-1.8 -3.0 0.05"  size="0.6 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob12" type="box" pos="4.1 -1.2 0.05"  size="0.8 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob13" type="box" pos="3.5 -4.9 0.05" size="0.7 0.6 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob14" type="box" pos="-2.0 -7.1 0.05" size="0.8 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob15" type="box" pos="-3.8 -5.7 0.05" size="0.7 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob16" type="box" pos="-2.9 -9.8 0.05" size="1 0.6 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob17" type="box" pos="-9.5 -12.0 0.05" size="0.8 0.5 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob18" type="box" pos="-7.8 -13.9 0.05" size="0.7 0.4 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob19" type="box" pos="5.8 -11.9 0.05" size="1 0.6 0.1" rgba="0.5 0.5 0.5 1"/>
+    <geom name="ob20" type="box" pos="3.0 -13.8 0.05" size="1 0.6 0.1" rgba="0.5 0.5 0.5 1"/-->
+
+    <frame pos="0 0 -0.095">
       <attach model="car" prefix="1"/>
     </frame>
-    <frame pos="1.5 0 -.095">
+    <frame pos="1.5 1.5 -0.095">
       <attach model="car" prefix="2"/>
     </frame>
-    <frame pos="-1.5 0 -.095">
+    <frame pos="-1.5 1.5 -0.095">
       <attach model="car" prefix="3"/>
     </frame>
+    <frame pos="3.0 3.0 -0.095">
+      <attach model="car" prefix="4"/>
+    </frame>
+    <frame pos="-3.0 3.0 -0.095">
+      <attach model="car" prefix="5"/>
+    </frame>
   </worldbody>
-  
+
   <sensor>
     <touch name="victim1_temp_sensor" site="victim1_temp"/>
     <touch name="victim2_temp_sensor" site="victim2_temp"/>
     <touch name="victim3_temp_sensor" site="victim3_temp"/>
     <touch name="victim4_temp_sensor" site="victim4_temp"/>
     <touch name="victim5_temp_sensor" site="victim5_temp"/>
+    <touch name="victim6_temp_sensor" site="victim1_temp"/>
+    <touch name="victim7_temp_sensor" site="victim2_temp"/>
+    <touch name="victim8_temp_sensor" site="victim3_temp"/>
+    <touch name="victim9_temp_sensor" site="victim4_temp"/>
+    <touch name="victim10_temp_sensor" site="victim5_temp"/>
+    <touch name="victim11_temp_sensor" site="victim1_temp"/>
+    <touch name="victim12_temp_sensor" site="victim2_temp"/>
+    <touch name="victim13_temp_sensor" site="victim3_temp"/>
+    <touch name="victim14_temp_sensor" site="victim4_temp"/>
+    <touch name="victim15_temp_sensor" site="victim5_temp"/>
+    <touch name="victim16_temp_sensor" site="victim1_temp"/>
+    <touch name="victim17_temp_sensor" site="victim2_temp"/>
+    <touch name="victim18_temp_sensor" site="victim3_temp"/>
+    <touch name="victim19_temp_sensor" site="victim4_temp"/>
+    <touch name="victim20_temp_sensor" site="victim5_temp"/>
   </sensor>
 </mujoco>

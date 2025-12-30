@@ -2,6 +2,7 @@ import math
 import numpy as np
 from typing import Optional, Dict, Tuple
 import logging
+import mujoco
 
 from shared_config import ControlOutput, PIDGains, PIDState, ControlMode
 
@@ -14,7 +15,7 @@ class Controller:
     MIN_MOTOR_SPEED = 2.0
     
     HEADING_TOLERANCE = 0.15
-    THERMAL_DETECT_RANGE = 3.0
+    THERMAL_DETECT_RANGE = 1.8
     VICTIM_APPROACH_DIST = 0.5
     
     WAYPOINT_REACHED_DIST = 0.15
@@ -60,17 +61,15 @@ class Controller:
         self.current_waypoint = np.array([x, y], dtype=float)
         self.reset_pid_state()
         self.tracking_victim = False
-        self.logger.info(f"New waypoint: ({x:.2f}, {y:.2f})")
         
     def set_idle(self):
         self.current_waypoint = None
         self.tracking_victim = False
         
-    def detect_thermal_source(self, car_pos: np.ndarray, yaw: float) -> Optional[Tuple[np.ndarray, float]]:
-        
+    def detect_thermal_source(self, car_pos: np.ndarray, yaw: float, m, d) -> Optional[Tuple[np.ndarray, float]]:
         if not self.thermal_data:
             return None
-            
+        
         center_dist = self.thermal_data.get(f"{self.robot_prefix}thermal_center", float('inf'))
         left_dist = self.thermal_data.get(f"{self.robot_prefix}thermal_left", float('inf'))
         right_dist = self.thermal_data.get(f"{self.robot_prefix}thermal_right", float('inf'))
@@ -79,25 +78,38 @@ class Controller:
         
         if min_dist >= self.THERMAL_DETECT_RANGE:
             return None
-            
-        if center_dist == min_dist:
-            angle_offset = 0.0
-        elif left_dist == min_dist:
-            angle_offset = math.radians(15)
-        else:
-            angle_offset = math.radians(-15)
-            
-        victim_angle = yaw + angle_offset
-        victim_x = car_pos[0] + min_dist * math.cos(victim_angle)
-        victim_y = car_pos[1] + min_dist * math.sin(victim_angle)
         
-        return np.array([victim_x, victim_y]), min_dist
+        closest_victim = None
+        closest_dist = float('inf')
+        
+        for i in range(1, 6):
+            try:
+                victim_body_id = mujoco.mj_name2id(m, mujoco.mjtObj.mjOBJ_BODY, f"victim{i}")
+                victim_temp = m.body_user[victim_body_id, 0]
+                
+                if victim_temp > 310:
+                    victim_pos_3d = d.xpos[victim_body_id]
+                    victim_pos_2d = np.array([victim_pos_3d[0], victim_pos_3d[1]])
+                    dist_to_victim = np.linalg.norm(victim_pos_2d - car_pos)
+                    
+                    if dist_to_victim < self.THERMAL_DETECT_RANGE and dist_to_victim < closest_dist:
+                        closest_victim = victim_pos_2d
+                        closest_dist = dist_to_victim
+            except Exception as e:
+                continue
+        
+        if closest_victim is not None:
+            return closest_victim, closest_dist
+        
+        return None
         
     def update_control(
         self,
         sensor_readings: Dict[str, float],
         car_pos: np.ndarray,
         yaw: float,
+        m,
+        d,
         current_time: float = 0.0,
     ) -> ControlOutput:
         
@@ -106,7 +118,7 @@ class Controller:
         self.thermal_data = {name: sensor_readings.get(name, float('inf')) 
                             for name in self.thermal_sensor_names}
         
-        thermal_detection = self.detect_thermal_source(car_pos, yaw)
+        thermal_detection = self.detect_thermal_source(car_pos, yaw, m, d)
         
         if thermal_detection is not None:
             victim_pos, victim_dist = thermal_detection

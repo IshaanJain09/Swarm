@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from enum import Enum, auto
 from typing import Optional
 
+
 class ControlMode(Enum):
     IDLING = auto()
     OBSTACLE_AVOIDANCE = auto()
